@@ -1,15 +1,17 @@
 # Servidor MCP para Alegra API
 
-Este proyecto implementa un servidor compatible con el Protocolo de Contexto de Modelo (MCP) que actúa como un puente hacia la API de contabilidad de Alegra. Permite que los Modelos de Lenguaje Grandes (LLMs) interactúen de forma segura con los datos de Alegra, como facturas, contactos y artículos.
+Este proyecto implementa un servidor compatible con el Protocolo de Contexto de Modelo (MCP) que actúa como un puente hacia la API de contabilidad de Alegra. Permite que los Modelos de Lenguaje Grandes (LLMs) interactúen de forma segura con una amplia gama de recursos de Alegra, como facturas, contactos, ítems, pagos y más.
 
 Elaborado por Juan Sánchez.
 
 ## Características
 
-  * **Integración con Alegra**: Ofrece una herramienta (`AlegraAPI`) para realizar consultas a los *endpoints* de la API de Alegra.
-  * **Operaciones Soportadas**: Permite realizar operaciones `GET` y `POST` sobre los recursos de `invoices`, `contacts`, y `items`.
-  * **Búsqueda Flexible**: Admite la consulta de recursos por ID específico y la adición de parámetros de consulta para filtros avanzados.
-  * **Registro de Actividad**: Todas las solicitudes y errores se registran en un archivo local `alegra-mcp.log` para facilitar la depuración.
+  * **Integración Completa con Alegra**: Ofrece una herramienta (`AlegraAPI`) para realizar operaciones CRUD (`GET`, `POST`, `PUT`, `DELETE`) en la mayoría de los *endpoints* de la API de Alegra.
+  * **Amplia Gama de Recursos**: Soporta una gran variedad de recursos, incluyendo `invoices`, `contacts`, `items`, `credit-notes`, `purchase-orders`, `bills`, `warehouses`, `bank-accounts`, `taxes`, entre muchos otros.
+  * **Operaciones Flexibles**: Permite la consulta de colecciones de recursos, la obtención de un recurso por su ID específico, la creación de nuevos recursos y la actualización o eliminación de los existentes.
+  * **Búsqueda y Filtrado**: Admite el uso de parámetros de consulta para filtrar y paginar resultados en las solicitudes `GET`.
+  * **Manejo de Cuerpo de Solicitud**: Utiliza el parámetro `queryParams` para enviar el cuerpo (body) de las solicitudes `POST` y `PUT`.
+  * **Registro de Actividad**: Todas las solicitudes y errores se registran en un archivo local `alegra-mcp.log` para facilitar la depuración y el seguimiento.
 
 ## Aviso de Seguridad Importante
 
@@ -17,7 +19,7 @@ Elaborado por Juan Sánchez.
 
 Este servidor está diseñado con la seguridad como prioridad. La autenticación con la API de Alegra se gestiona de la siguiente manera:
 
-1.  **Credenciales Locales**: El servidor lee su usuario (`ALEGRA_USER`) y token (`ALEGRA_TOKEN`) directamente desde un archivo `.env` en su entorno local en el momento en que se realiza cada solicitud. Estas credenciales son enviadas en la configuración del MCP.
+1.  **Credenciales Locales**: El servidor lee su usuario (`ALEGRA_USER`) y token (`ALEGRA_TOKEN`) directamente desde un archivo `.env` en su entorno local en el momento en que se realiza cada solicitud.
 2.  **Sin Almacenamiento**: Las credenciales no están codificadas en el programa, no se almacenan en ninguna base de datos ni se guardan en el estado del servidor.
 3.  **Protección en Git**: El archivo `.gitignore` está configurado para excluir explícitamente cualquier archivo `.env`, evitando que sus credenciales sean enviadas accidentalmente a un repositorio de código.
 
@@ -35,10 +37,10 @@ Agregue la siguiente configuración a su cliente MCP:
         "command": "npx",
         "args": [
             "-y",
-            "@juandattics/alegra-mcp"
+            "@juancsanchez/alegra-mcp"
         ],
         "env": {
-            "ALEGRA_USER": "su_email@dattics.com",
+            "ALEGRA_USER": "su_email@dominio.com",
             "ALEGRA_TOKEN": "su_token_de_api_aqui"
         }
     }
@@ -99,4 +101,3 @@ Siga estos pasos si desea modificar o examinar el código.
     ```bash
     npm start
     ```
-
