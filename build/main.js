@@ -56,7 +56,7 @@ server.tool("AlegraAPI", // Nombre de la herramienta
     ]).describe("El tipo de recurso de la API de Alegra a consultar o modificar. Ej: 'invoices', 'contacts', 'items', 'credit-notes', 'purchase-orders', etc."),
     method: z.enum(['get', 'post', 'put', 'delete']).default('get').describe("El método HTTP a utilizar (get, post, put, delete)."),
     id: z.string().optional().describe("El ID específico de un recurso (ej: el ID de una factura para get, put, delete)."),
-    queryParams: z.record(z.string()).optional().describe("Parámetros de consulta adicionales (ej: 'start', 'limit', 'query' para GET) o cuerpo de la solicitud para POST/PUT.")
+    queryParams: z.record(z.union([z.string(), z.any()])).optional().describe("Parámetros de consulta adicionales (ej: 'start', 'limit', 'query' para GET) o cuerpo de la solicitud para POST/PUT.")
 }, async ({ endpoint, method, id, queryParams }) => {
     const BASE_URL = 'https://api.alegra.com/api/v1/';
     let url = `${BASE_URL}${endpoint}`;
