@@ -63,7 +63,7 @@ Siga estos pasos si desea modificar o examinar el código.
 1.  **Clonar el Repositorio**
 
     ```bash
-    git clone <URL_DEL_REPOSITORIO>
+    git clone https://github.com/juancsanchez/Alegra-MCP
     cd alegra-mcp
     ```
 
