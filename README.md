@@ -17,13 +17,37 @@ Elaborado por Juan Sánchez.
 
 Este servidor está diseñado con la seguridad como prioridad. La autenticación con la API de Alegra se gestiona de la siguiente manera:
 
-1.  **Credenciales Locales**: El servidor lee su usuario (`ALEGRA_USER`) y token (`ALEGRA_TOKEN`) directamente desde un archivo `.env` en su entorno local en el momento en que se realiza cada solicitud.
+1.  **Credenciales Locales**: El servidor lee su usuario (`ALEGRA_USER`) y token (`ALEGRA_TOKEN`) directamente desde un archivo `.env` en su entorno local en el momento en que se realiza cada solicitud. Estas credenciales son enviadas en la configuración del MCP.
 2.  **Sin Almacenamiento**: Las credenciales no están codificadas en el programa, no se almacenan en ninguna base de datos ni se guardan en el estado del servidor.
 3.  **Protección en Git**: El archivo `.gitignore` está configurado para excluir explícitamente cualquier archivo `.env`, evitando que sus credenciales sean enviadas accidentalmente a un repositorio de código.
 
-> **Usted puede utilizar su LLM de confianza para validar el código y confirmar que sus credenciales no son almacenadas ni transmitidas a terceros.** El archivo clave para revisar es `src/auth.ts`, donde se leen las variables de entorno para generar las cabeceras de autorización.
+> **Usted puede utilizar su LLM de confianza para validar el código y confirmar que sus credenciales no son almacenadas ni transmitidas a terceros.** El archivo clave para revisar es `src/auth.ts`, donde se leen las variables de entorno para generar los headers de autorización.
 
-## Método 1: Instalación Local (para desarrolladores)
+## Método 1: Ejecución Directa con NPX (para usuarios finales) - Fácil
+
+Si no necesita modificar el código y solo desea utilizar la herramienta con su LLM, puede configurar su cliente MCP (por ejemplo, en el `settings.json` de VS Code) para que descargue y ejecute el servidor automáticamente.
+
+Agregue la siguiente configuración a su cliente MCP:
+
+```json
+"mcp.servers": {
+    "Alegra-MCP-Public": {
+        "command": "npx",
+        "args": [
+            "-y",
+            "@juandattics/alegra-mcp"
+        ],
+        "env": {
+            "ALEGRA_USER": "su_email@dattics.com",
+            "ALEGRA_TOKEN": "su_token_de_api_aqui"
+        }
+    }
+}
+```
+
+Esta configuración le indica a su cliente que use `npx` para ejecutar la última versión del paquete, pasando sus credenciales de forma segura a través de variables de entorno, sin necesidad de clonar o instalar el proyecto manualmente.
+
+## Método 2: Instalación Local (para desarrolladores)
 
 Siga estos pasos si desea modificar o examinar el código.
 
@@ -76,26 +100,3 @@ Siga estos pasos si desea modificar o examinar el código.
     npm start
     ```
 
-## Método 2: Ejecución Directa con NPX (para usuarios finales)
-
-Si no necesita modificar el código y solo desea utilizar la herramienta con su LLM, puede configurar su cliente MCP (por ejemplo, en el `settings.json` de VS Code) para que descargue y ejecute el servidor automáticamente.
-
-Agregue la siguiente configuración a su cliente MCP:
-
-```json
-"mcp.servers": {
-    "Alegra-MCP-Public": {
-        "command": "npx",
-        "args": [
-            "-y",
-            "@juandattics/alegra-mcp"
-        ],
-        "env": {
-            "ALEGRA_USER": "su_email@dattics.com",
-            "ALEGRA_TOKEN": "su_token_de_api_aqui"
-        }
-    }
-}
-```
-
-Esta configuración le indica a su cliente que use `npx` para ejecutar la última versión del paquete, pasando sus credenciales de forma segura a través de variables de entorno, sin necesidad de clonar o instalar el proyecto manualmente.
