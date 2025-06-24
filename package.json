@@ -1,6 +1,6 @@
 {
   "name": "@juancsanchez/alegra-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Servidor MCP para la API de Alegra",
   "main": "index.js",
   "type": "module",
