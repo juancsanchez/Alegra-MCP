@@ -4,6 +4,10 @@ Este proyecto implementa un servidor compatible con el Protocolo de Contexto de 
 
 Elaborado por Juan Sánchez.
 
+<a href="https://glama.ai/mcp/servers/@juancsanchez/Alegra-MCP">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@juancsanchez/Alegra-MCP/badge" alt="Alegra Server MCP server" />
+</a>
+
 ## Características
 
   * **Integración con Alegra**: Ofrece una herramienta (`AlegraAPI`) para realizar consultas a los *endpoints* de la API de Alegra.
