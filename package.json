@@ -1,0 +1,30 @@
+{
+  "name": "@juancsanchez/alegra-mcp",
+  "version": "1.2.0",
+  "description": "Servidor MCP para la API de Alegra",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "alegra-mcp": "build/main.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/main.js"
+  },
+  "keywords": [],
+  "author": "Juan Sánchez",
+  "license": "ISC",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.1",
+    "isomorphic-fetch": "^3.0.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/isomorphic-fetch": "^0.0.39",
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3"
+  }
+}
