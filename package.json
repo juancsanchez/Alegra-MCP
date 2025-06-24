@@ -1,9 +1,15 @@
 {
-  "name": "alegra-mcp",
+  "name": "@juancsanchez/alegra-mcp",
   "version": "1.0.0",
   "description": "Servidor MCP para la API de Alegra",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "alegra-mcp": "build/main.js"
+  },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "tsc",
     "start": "node build/main.js"
