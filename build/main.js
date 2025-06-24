@@ -9,6 +9,33 @@ import { logger } from './logger.js'; // Importar el logger
 const server = new McpServer({
     name: "Alegra-MCP",
     version: "0.1.0",
+    prompts: [
+        {
+            title: "Listar las 5 facturas de venta más recientes",
+            description: "Ejemplo para obtener un listado de las últimas 5 facturas emitidas.",
+            prompt: "Por favor, muéstreme las últimas 5 facturas de venta."
+        },
+        {
+            title: "Buscar un contacto por su nombre",
+            description: "Demuestra cómo usar los parámetros de consulta para buscar un cliente específico.",
+            prompt: "Encuentre el contacto con el nombre \"Cliente Ejemplo S.A.S\""
+        },
+        {
+            title: "Obtener detalles de un ítem por su ID",
+            description: "Ejemplo para recuperar un producto o servicio usando su identificador único.",
+            prompt: "Obtenga los detalles del ítem con ID 15."
+        },
+        {
+            title: "Crear un borrador de factura de venta",
+            description: "Muestra cómo estructurar una solicitud para crear una nueva factura en estado de borrador.",
+            prompt: "Cree un nuevo borrador de factura para el cliente con ID 1, con el ítem de ID 4 (cantidad 2, precio 50000)."
+        },
+        {
+            title: "Listar las cuentas bancarias",
+            description: "Ejemplo para consultar recursos que no requieren parámetros complejos.",
+            prompt: "Liste todas las cuentas bancarias registradas."
+        }
+    ]
 });
 logger.info("Iniciando Servidor MCP para Alegra...");
 server.tool("AlegraAPI", // Nombre de la herramienta
