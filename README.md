@@ -32,7 +32,8 @@ Si no necesita modificar el código y solo desea utilizar la herramienta con su 
 Agregue la siguiente configuración a su cliente MCP:
 
 ```json
-"mcp.servers": {
+{
+"mcpservers": {
     "Alegra-MCP-Public": {
         "command": "npx",
         "args": [
@@ -44,6 +45,7 @@ Agregue la siguiente configuración a su cliente MCP:
             "ALEGRA_TOKEN": "su_token_de_api_aqui"
         }
     }
+}
 }
 ```
 
