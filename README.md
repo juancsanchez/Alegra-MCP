@@ -6,12 +6,13 @@ Elaborado por Juan Sánchez.
 
 ## Características
 
-  * **Integración Completa con Alegra**: Ofrece una herramienta (`AlegraAPI`) para realizar operaciones CRUD (`GET`, `POST`, `PUT`, `DELETE`) en la mayoría de los *endpoints* de la API de Alegra.
+  * **Integración Completa con Alegra**: Ofrece una herramienta (`AlegraAPI`) para realizar operaciones CRUD (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`) en la mayoría de los *endpoints* de la API de Alegra.
   * **Amplia Gama de Recursos**: Soporta una gran variedad de recursos, incluyendo `invoices`, `contacts`, `items`, `credit-notes`, `purchase-orders`, `bills`, `warehouses`, `bank-accounts`, `taxes`, entre muchos otros.
-  * **Operaciones Flexibles**: Permite la consulta de colecciones de recursos, la obtención de un recurso por su ID específico, la creación de nuevos recursos y la actualización o eliminación de los existentes.
+  * **Operaciones Flexibles**: Permite la consulta de colecciones de recursos, la obtención de un recurso por su ID específico, la creación de nuevos recursos y la actualización parcial (`PATCH`) o completa (`PUT`) y la eliminación de los existentes.
   * **Búsqueda y Filtrado**: Admite el uso de parámetros de consulta para filtrar y paginar resultados en las solicitudes `GET`.
-  * **Manejo de Cuerpo de Solicitud**: Utiliza el parámetro `queryParams` para enviar el cuerpo (body) de las solicitudes `POST` y `PUT`.
-  * **Registro de Actividad**: Todas las solicitudes y errores se registran en un archivo local `alegra-mcp.log` para facilitar la depuración y el seguimiento.
+  * **Manejo de Cuerpo de Solicitud**: Utiliza el parámetro `queryParams` para enviar el cuerpo (body) de las solicitudes `POST`, `PUT` y `PATCH`.
+  * **Registro de Actividad**: Todas las solicitudes (con su código de respuesta HTTP) y errores se registran en un archivo local `alegra-mcp.log` para facilitar la depuración y el seguimiento.
+  * **Sin dependencias externas de red**: Utiliza el `fetch` nativo de Node.js 18+, sin librerías adicionales de HTTP.
 
 ## Aviso de Seguridad Importante
 
@@ -19,9 +20,10 @@ Elaborado por Juan Sánchez.
 
 Este servidor está diseñado con la seguridad como prioridad. La autenticación con la API de Alegra se gestiona de la siguiente manera:
 
-1.  **Credenciales Locales**: El servidor lee su usuario (`ALEGRA_USER`) y token (`ALEGRA_TOKEN`) directamente desde un archivo `.env` en su entorno local en el momento en que se realiza cada solicitud.
-2.  **Sin Almacenamiento**: Las credenciales no están codificadas en el programa, no se almacenan en ninguna base de datos ni se guardan en el estado del servidor.
-3.  **Protección en Git**: El archivo `.gitignore` está configurado para excluir explícitamente cualquier archivo `.env`, evitando que sus credenciales sean enviadas accidentalmente a un repositorio de código.
+1.  **Credenciales Locales**: El servidor lee su usuario (`ALEGRA_USER`) y token (`ALEGRA_TOKEN`) directamente desde variables de entorno en su máquina.
+2.  **Sin Almacenamiento en Disco**: Las credenciales no están codificadas en el programa ni se guardan en ninguna base de datos. Se mantienen en memoria solo durante la sesión del proceso.
+3.  **Caché en Memoria (solo en RAM)**: Los headers de autenticación se calculan una vez y se reutilizan durante la sesión activa para mayor eficiencia; se descartan al cerrar el servidor.
+4.  **Protección en Git**: El archivo `.gitignore` está configurado para excluir explícitamente cualquier archivo `.env`, evitando que sus credenciales sean enviadas accidentalmente a un repositorio de código.
 
 > **Usted puede utilizar su LLM de confianza para validar el código y confirmar que sus credenciales no son almacenadas ni transmitidas a terceros.** El archivo clave para revisar es `src/auth.ts`, donde se leen las variables de entorno para generar los headers de autorización.
 
@@ -57,7 +59,7 @@ Siga estos pasos si desea modificar o examinar el código.
 
 ### Requisitos Previos
 
-  * **Node.js**: Se requiere la versión 18 o superior.
+  * **Node.js**: Se requiere la versión **18 o superior** (utiliza `fetch` nativo).
   * **Credenciales de Alegra**: Necesita un usuario y un token de API de su cuenta de Alegra.
 
 ### Instalación y Configuración
