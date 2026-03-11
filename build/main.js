@@ -2,13 +2,12 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import fetch from 'isomorphic-fetch';
 import { getAlegraAuthHeaders } from './auth.js';
-import { logger } from './logger.js'; // Importar el logger
-// Creamos la instancia del servidor
+import { logger } from './logger.js';
+const BASE_URL = 'https://api.alegra.com/api/v1/';
 const server = new McpServer({
     name: "Alegra-MCP",
-    version: "0.1.0",
+    version: "1.3.1",
     prompts: [
         {
             title: "Listar las 5 facturas de venta más recientes",
@@ -38,10 +37,7 @@ const server = new McpServer({
     ]
 });
 logger.info("Iniciando Servidor MCP para Alegra...");
-server.tool("AlegraAPI", // Nombre de la herramienta
-"Una herramienta para interactuar con la API de contabilidad de Alegra. Permite realizar operaciones CRUD en una amplia gama de recursos como Facturas, Contactos, Items, Notas de Crédito, Órdenes de Compra y muchos más.", // Descripción para la IA
-{
-    // Esquema de argumentos usando Zod
+server.tool("AlegraAPI", "Una herramienta para interactuar con la API de contabilidad de Alegra. Permite realizar operaciones CRUD en una amplia gama de recursos como Facturas, Contactos, Items, Notas de Crédito, Órdenes de Compra y muchos más.", {
     endpoint: z.enum([
         'invoices',
         'contacts',
@@ -56,7 +52,7 @@ server.tool("AlegraAPI", // Nombre de la herramienta
         'recurring-invoices',
         'payments',
         'bills',
-        'debit-notes', // Este es para notas débito de proveedor
+        'debit-notes',
         'recurring-payments',
         'warehouses',
         'warehouse-transfers',
@@ -66,7 +62,7 @@ server.tool("AlegraAPI", // Nombre de la herramienta
         'variant-attributes',
         'item-categories',
         'sellers',
-        'categories', // Para Cuentas Contables
+        'categories',
         'cost-centers',
         'journals',
         'bank-accounts',
@@ -81,36 +77,29 @@ server.tool("AlegraAPI", // Nombre de la herramienta
         'webhooks-subscriptions',
         'additional-charges'
     ]).describe("El tipo de recurso de la API de Alegra a consultar o modificar. Ej: 'invoices', 'contacts', 'items', 'credit-notes', 'purchase-orders', etc."),
-    method: z.enum(['get', 'post', 'put', 'delete']).default('get').describe("El método HTTP a utilizar (get, post, put, delete)."),
-    id: z.string().optional().describe("El ID específico de un recurso (ej: el ID de una factura para get, put, delete)."),
-    queryParams: z.record(z.union([z.string(), z.any()])).optional().describe("Parámetros de consulta adicionales (ej: 'start', 'limit', 'query' para GET) o cuerpo de la solicitud para POST/PUT.")
+    method: z.enum(['get', 'post', 'put', 'patch', 'delete']).default('get').describe("El método HTTP a utilizar (get, post, put, patch, delete)."),
+    id: z.string().optional().describe("El ID específico de un recurso (ej: el ID de una factura para get, put, patch, delete)."),
+    queryParams: z.record(z.union([z.string(), z.any()])).optional().describe("Parámetros de consulta adicionales (ej: 'start', 'limit', 'query' para GET) o cuerpo de la solicitud para POST/PUT/PATCH.")
 }, async ({ endpoint, method, id, queryParams }) => {
-    const BASE_URL = 'https://api.alegra.com/api/v1/';
     let url = `${BASE_URL}${endpoint}`;
+    const upperMethod = method.toUpperCase();
     if (id) {
         url += `/${id}`;
     }
-    // Definimos RequestInit aquí para poder modificarlo antes de fetch
     const fetchOptions = {
-        method: method.toUpperCase(),
-        headers: getAlegraAuthHeaders() // Content-Type application/json ya está en getAlegraAuthHeaders
+        method: upperMethod,
+        headers: getAlegraAuthHeaders()
     };
-    if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'DELETE') {
+    if (upperMethod === 'GET' || upperMethod === 'DELETE') {
         if (queryParams && Object.keys(queryParams).length > 0) {
             const params = new URLSearchParams(queryParams);
             url += `?${params.toString()}`;
         }
     }
-    else if (method.toUpperCase() === 'POST' || method.toUpperCase() === 'PUT') {
-        if (queryParams && Object.keys(queryParams).length > 0) {
-            fetchOptions.body = JSON.stringify(queryParams);
-        }
-        else {
-            // Para POST/PUT, si no se proporcionan queryParams (cuerpo), enviar un cuerpo JSON vacío.
-            fetchOptions.body = JSON.stringify({});
-        }
+    else {
+        fetchOptions.body = JSON.stringify(queryParams ?? {});
     }
-    logger.info(`Realizando petición: ${method.toUpperCase()} ${url}`);
+    logger.info(`Realizando petición: ${upperMethod} ${url}`);
     if (fetchOptions.body) {
         logger.info(`Con cuerpo: ${fetchOptions.body}`);
     }
@@ -121,19 +110,20 @@ server.tool("AlegraAPI", // Nombre de la herramienta
             throw new Error(`Error de la API de Alegra: ${response.status} ${response.statusText} - ${errorBody}`);
         }
         const data = await response.json();
+        logger.info(`Respuesta exitosa: ${upperMethod} ${url} → ${response.status}`);
         return {
             content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
         };
     }
     catch (error) {
-        logger.error("Error al llamar a la API de Alegra:", error);
+        const message = error instanceof Error ? error.message : String(error);
+        logger.error("Error al llamar a la API de Alegra:", error instanceof Error ? error : new Error(message));
         return {
-            content: [{ type: "text", text: `Error: ${error.message}` }],
+            content: [{ type: "text", text: `Error: ${message}` }],
             isError: true
         };
     }
 });
-// Función principal para conectar y arrancar el servidor
 async function main() {
     const transport = new StdioServerTransport();
     await server.connect(transport);

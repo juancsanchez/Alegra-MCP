@@ -17,13 +17,14 @@
   "keywords": [],
   "author": "Juan Sánchez",
   "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.1",
-    "isomorphic-fetch": "^3.0.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@types/isomorphic-fetch": "^0.0.39",
     "@types/node": "^24.0.3",
     "typescript": "^5.8.3"
   }
